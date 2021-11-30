@@ -22,54 +22,117 @@ interface CartContextData {
 const CartContext = createContext<CartContextData>({} as CartContextData);
 
 export function CartProvider({ children }: CartProviderProps): JSX.Element {
-  const [cart, setCart] = useState<Product[]>(() => {
-    // const storagedCart = Buscar dados do localStorage
+  
+	const [cart, setCart] = useState<Product[]>(() => {
+		const storagedCart = localStorage.getItem('@RocketShoes:cart');
 
-    // if (storagedCart) {
-    //   return JSON.parse(storagedCart);
-    // }
+		if (storagedCart) {
+		   return JSON.parse(storagedCart);
+		}
+		console.log("Iniciando... Nada encontrado no carrinho")
+		return[];
+	});
 
-    return [];
-  });
+	const addProduct = async (productId: number) => {
+		try {
+			// TODO
+			/*
+			- Capturar utilizando trycatch os erros que ocorrerem ao longo do método e, 
+			no catch, utilizar o método error da react-toastify com a seguinte mensagem:
+			--- toast.error('Erro na adição do produto');
+			*/
+			
+			const isProductInCart = cart.find(product => product.id === productId ) 
+			
+			
+			if (isProductInCart === undefined) {
+				console.log("Produto ainda não está no carrinho. Requisitando servidor...")
 
-  const addProduct = async (productId: number) => {
-    try {
-      // TODO
-    } catch {
-      // TODO
-    }
-  };
+				let productsResponse = await api.get("/products")	
+				let selectedProduct = productsResponse.data.find( (product:Product) => ( 
+					product.id === productId
+				))
 
-  const removeProduct = (productId: number) => {
-    try {
-      // TODO
-    } catch {
-      // TODO
-    }
-  };
+				let newCartItem = {...selectedProduct, amount: 1};
+				let newListOfCartItens = [...cart, newCartItem];
+				
+				setCart(newListOfCartItens);
+				localStorage.setItem('@RocketShoes:cart', JSON.stringify(newListOfCartItens))
+				
+				console.log("Carrinho atualizado com sucesso!!")
+				console.log("--------------------------------")
+					
+			}
+			else {
+				console.log("Produto encontrado:  verificando disponibilidade no estoque")
 
-  const updateProductAmount = async ({
-    productId,
-    amount,
-  }: UpdateProductAmount) => {
-    try {
-      // TODO
-    } catch {
-      // TODO
-    }
-  };
+				const stockResponse = await api.get("/stock")
+				let stockProduct = stockResponse.data.find((item:Stock) => item.id === productId );
+				let cartProductIndex = cart.findIndex((cartItem: Product) => cartItem.id === productId)
+				
+				console.log("imprimindo productStock: ");
+				console.log(stockProduct.amount);
+				console.log("imprimindo Cart ");
+				console.log(cart[0].amount);
 
-  return (
-    <CartContext.Provider
-      value={{ cart, addProduct, removeProduct, updateProductAmount }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
+				console.log("id: " + stockProduct.id + " total no stock: " + stockProduct.amount);
+				console.log(stockResponse.data)
+
+				if(cart[cartProductIndex].amount < stockProduct.amount) {
+					// soma +1 ao amount
+					let newCart = [...cart];
+					newCart[cartProductIndex].amount += 1;
+					setCart(newCart);
+					localStorage.setItem('@RocketShoes:cart' ,JSON.stringify(newCart));
+				}
+				else{
+					toast.error('Quantidade solicitada fora de estoque')
+				}
+
+				console.log("--------------------------------")
+			}		
+
+			// atualizar o amount do produto 
+		} 
+		catch(er) {
+			// TODO
+
+			toast.error('Erro na adição do produto')	
+			console.log(er)
+		}
+	};
+
+	const removeProduct = (productId: number) => {
+		try {
+			// TODO
+		} catch {
+			// TODO
+		}
+	};
+
+	const updateProductAmount = async ({
+		productId,
+		amount,
+	}: UpdateProductAmount) => {
+		try {
+			// TODO
+			api.get("/stocks").then(response => console.log(response.data))
+		} catch {
+			// TODO
+		}
+	};
+
+	return (
+		<CartContext.Provider
+			value={{ cart, addProduct, removeProduct, updateProductAmount }}
+		>
+			{children}
+		</CartContext.Provider>
+	);
 }
 
 export function useCart(): CartContextData {
-  const context = useContext(CartContext);
+	const context = useContext(CartContext);
 
-  return context;
+	return context;
 }
