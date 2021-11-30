@@ -7,41 +7,42 @@ import { formatPrice } from '../../util/format';
 import { useCart } from '../../hooks/useCart';
 
 interface Product {
-id: number;
-title: string;
-price: number;
-image: string;
+   id: number;
+   title: string;
+   price: number;
+   image: string;
 }
 
 interface ProductFormatted extends Product {
-priceFormatted: string;
+   priceFormatted: string;
 }
 
 interface CartItemsAmount {
-[key: number]: number;
+   [key: number]: number;
 }
 
 const Home = (): JSX.Element => {
-const [products, setProducts] = useState<ProductFormatted[]>([]);
-// const { addProduct, cart } = useCart();
+   const [products, setProducts] = useState<ProductFormatted[]>([]);
+   const { addProduct, cart } = useCart();
 
-// const cartItemsAmount = cart.reduce((sumAmount, product) => {
-//   // TODO
-// }, {} as CartItemsAmount)
+   const cartItemsAmount = cart.reduce((sumAmount, product) => {
+      // TODO
+      console.log("ssd" + sumAmount)
+      return {}
+   }, {} as CartItemsAmount)
 
    useEffect(() => {
       async function loadProducts() {
          api.get("/products")
-         .then(response => setProducts(response.data))
-         .catch(error => console.log("Opa, algum erro na requisição" + error))
+            .then(response => setProducts(response.data))
+            .catch(error => console.log("Opa, algum erro na requisição" + error))
       }
-
       loadProducts();
    }, []);
 
    function handleAddProduct(id: number) {
       // TODO
-      console.log("Adicionar produto")
+      addProduct(id)
    }
 
    console.log(products)
@@ -64,7 +65,7 @@ const [products, setProducts] = useState<ProductFormatted[]>([]);
                      >
                         <div data-testid="cart-product-quantity">
                            <MdAddShoppingCart size={16} color="#FFF" />
-                           {/* {cartItemsAmount[product.id] || 0} */} 2
+                           { cartItemsAmount[product.id] || 0 }
                         </div>
                         <span>ADICIONAR AO CARRINHO</span>
                      </button>
