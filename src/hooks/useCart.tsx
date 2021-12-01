@@ -35,16 +35,9 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
 	const addProduct = async (productId: number) => {
 		try {
-			// TODO
-			/*
-			- Capturar utilizando trycatch os erros que ocorrerem ao longo do método e, 
-			no catch, utilizar o método error da react-toastify com a seguinte mensagem:
-			--- toast.error('Erro na adição do produto');
-			*/
-			
+
 			const isProductInCart = cart.find(product => product.id === productId ) 
-			
-			
+					
 			if (isProductInCart === undefined) {
 				console.log("Produto ainda não está no carrinho. Requisitando servidor...")
 
@@ -79,7 +72,6 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 				console.log(stockResponse.data)
 
 				if(cart[cartProductIndex].amount < stockProduct.amount) {
-					// soma +1 ao amount
 					let newCart = [...cart];
 					newCart[cartProductIndex].amount += 1;
 					setCart(newCart);
@@ -91,12 +83,8 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
 				console.log("--------------------------------")
 			}		
-
-			// atualizar o amount do produto 
 		} 
 		catch(er) {
-			// TODO
-
 			toast.error('Erro na adição do produto')	
 			console.log(er)
 		}
