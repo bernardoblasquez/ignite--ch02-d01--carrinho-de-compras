@@ -1,119 +1,136 @@
 import React from 'react';
 import {
-  MdDelete,
-  MdAddCircleOutline,
-  MdRemoveCircleOutline,
+   MdDelete,
+   MdAddCircleOutline,
+   MdRemoveCircleOutline,
 } from 'react-icons/md';
 
-// import { useCart } from '../../hooks/useCart';
-// import { formatPrice } from '../../util/format';
+import { useCart } from '../../hooks/useCart';
+import { formatPrice } from '../../util/format';
 import { Container, ProductTable, Total } from './styles';
 
 interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-  amount: number;
+   id: number;
+   title: string;
+   price: number;
+   image: string;
+   amount: number;
 }
 
 const Cart = (): JSX.Element => {
-  // const { cart, removeProduct, updateProductAmount } = useCart();
+const { cart, removeProduct, updateProductAmount } = useCart();
 
-  // const cartFormatted = cart.map(product => ({
-  //   // TODO
-  // }))
-  // const total =
-  //   formatPrice(
-  //     cart.reduce((sumTotal, product) => {
-  //       // TODO
-  //     }, 0)
-  //   )
+const cartFormatted = cart.map(product => {
+      return(
+      <tr data-testid="product">            
+         <td>
+            <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
+         </td>
+         <td>
+            <strong>{product.title}</strong>
+            <span>{product.price} </span>
+         </td>
+         <td>
+            <div>
+               <button
+                  type="button"
+                  data-testid="decrement-product"
+                  disabled={product.amount <= 1}
+                  onClick={() => handleProductDecrement(product)}
+               >
+                  <MdRemoveCircleOutline size={20} />
+               </button>
+               <input
+                  type="text"
+                  data-testid="product-amount"
+                  readOnly
+                  value={product.amount}
+               />
+               <button
+                  type="button"
+                  data-testid="increment-product"
+                  onClick={() => handleProductIncrement(product)}
+               >
+               <MdAddCircleOutline size={20} />
+               </button>
+            </div>
+         </td>
+         
+         <td>
+            <strong>
+               {product.amount * product.price}
+            </strong>
+         </td>
+         <td>
+            <button
+               type="button"
+               data-testid="remove-product"
+            // onClick={() => handleRemoveProduct(product.id)}
+            >
+               <MdDelete size={20} />
+            </button>
+         </td>
+      </tr>
+      )
+   
+})
 
-  function handleProductIncrement(product: Product) {
-    // TODO
-  }
+console.log(cartFormatted)
+console.log(cart)
 
-  function handleProductDecrement(product: Product) {
-    // TODO
-  }
+// const total =
+//   formatPrice(
+//     cart.reduce((sumTotal, product) => {
+//       // TODO
+//     }, 0)
+//   )
 
-  function handleRemoveProduct(productId: number) {
-    // TODO
-  }
+function handleProductIncrement(product: Product) {
+   // TODO
+}
 
-  return (
-    <Container>
+function handleProductDecrement(product: Product) {
+   // TODO
+}
+
+function handleRemoveProduct(productId: number) {
+   // TODO
+}
+
+return (
+   <Container>
       <ProductTable>
-        <thead>
-          <tr>
+      <thead>
+         <tr>
             <th aria-label="product image" />
             <th>PRODUTO</th>
             <th>QTD</th>
             <th>SUBTOTAL</th>
             <th aria-label="delete icon" />
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-testid="product">
-            <td>
-              <img src="https://rocketseat-cdn.s3-sa-east-1.amazonaws.com/modulo-redux/tenis1.jpg" alt="Tênis de Caminhada Leve Confortável" />
-            </td>
-            <td>
-              <strong>Tênis de Caminhada Leve Confortável</strong>
-              <span>R$ 179,90</span>
-            </td>
-            <td>
-              <div>
-                <button
-                  type="button"
-                  data-testid="decrement-product"
-                // disabled={product.amount <= 1}
-                // onClick={() => handleProductDecrement()}
-                >
-                  <MdRemoveCircleOutline size={20} />
-                </button>
-                <input
-                  type="text"
-                  data-testid="product-amount"
-                  readOnly
-                  value={2}
-                />
-                <button
-                  type="button"
-                  data-testid="increment-product"
-                // onClick={() => handleProductIncrement()}
-                >
-                  <MdAddCircleOutline size={20} />
-                </button>
-              </div>
-            </td>
-            <td>
-              <strong>R$ 359,80</strong>
-            </td>
-            <td>
-              <button
-                type="button"
-                data-testid="remove-product"
-              // onClick={() => handleRemoveProduct(product.id)}
-              >
-                <MdDelete size={20} />
-              </button>
-            </td>
-          </tr>
-        </tbody>
+         </tr>
+      </thead>
+      <tbody>
+         {/* impressão de cart */}
+         {cartFormatted}
+         {/* fim da impressão de cart */}
+      </tbody>
       </ProductTable>
 
       <footer>
-        <button type="button">Finalizar pedido</button>
+      <button type="button">Finalizar pedido</button>
 
-        <Total>
-          <span>TOTAL</span>
-          <strong>R$ 359,80</strong>
-        </Total>
+      <Total>
+         <span>TOTAL</span>
+         <strong>
+            R$ 359,80
+            {
+            // Custo total da compra
+            }
+         </strong>
+      </Total>
       </footer>
-    </Container>
-  );
+   </Container>
+);
 };
 
 export default Cart;
