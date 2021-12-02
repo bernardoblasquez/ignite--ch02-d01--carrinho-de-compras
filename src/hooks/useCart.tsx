@@ -62,11 +62,6 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 				const stockResponse = await api.get("/stock")
 				let stockProduct = stockResponse.data.find((item:Stock) => item.id === productId );
 				let cartProductIndex = cart.findIndex((cartItem: Product) => cartItem.id === productId)
-				
-				console.log("imprimindo productStock: ");
-				console.log(stockProduct.amount);
-				console.log("imprimindo Cart ");
-				console.log(cart[0].amount);
 
 				console.log("id: " + stockProduct.id + " total no stock: " + stockProduct.amount);
 				console.log(stockResponse.data)
@@ -92,9 +87,15 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
 	const removeProduct = (productId: number) => {
 		try {
-			// TODO
+			console.log("Removendo produto do carrinho e do local storage")
+
+			let newCart = cart.filter((item:Product) => item.id !== productId)
+			setCart(newCart)
+			localStorage.setItem('@RocketShoes:cart', JSON.stringify(newCart))
+
 		} catch {
 			// TODO
+			toast.error('Erro na remoção do produto')
 		}
 	};
 
