@@ -18,119 +18,110 @@ interface Product {
 }
 
 const Cart = (): JSX.Element => {
-const { cart, removeProduct, updateProductAmount } = useCart();
+   const { cart, removeProduct, updateProductAmount } = useCart();
 
-const cartFormatted = cart.map(product => {
-      return(
-      <tr data-testid="product">            
-         <td>
-            <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
-         </td>
-         <td>
-            <strong>{product.title}</strong>
-            <span>{product.price} </span>
-         </td>
-         <td>
-            <div>
-               <button
-                  type="button"
-                  data-testid="decrement-product"
-                  disabled={product.amount <= 1}
-                  onClick={() => handleProductDecrement(product)}
-               >
-                  <MdRemoveCircleOutline size={20} />
-               </button>
-               <input
-                  type="text"
-                  data-testid="product-amount"
-                  readOnly
-                  value={product.amount}
-               />
-               <button
-                  type="button"
-                  data-testid="increment-product"
-                  onClick={() => handleProductIncrement(product)}
-               >
-               <MdAddCircleOutline size={20} />
-               </button>
-            </div>
-         </td>
-         
-         <td>
-            <strong>
-               {product.amount * product.price}
+   const cartFormatted = cart.map(product => {
+         return(
+            <tr data-testid="product" key={product.id}>            
+               <td>
+                  <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
+               </td>
+               <td>
+                  <strong>{product.title}</strong>
+                  <span>{product.price} </span>
+               </td>
+               <td>
+                  <div>
+                     <button
+                        type="button"
+                        data-testid="decrement-product"
+                        disabled={product.amount <= 1}
+                        onClick={() => handleProductDecrement(product)}
+                     >
+                        <MdRemoveCircleOutline size={20} />
+                     </button>
+                     <input
+                        type="text"
+                        data-testid="product-amount"
+                        readOnly
+                        value={product.amount}
+                     />
+                     <button
+                        type="button"
+                        data-testid="increment-product"
+                        onClick={() => handleProductIncrement(product)}
+                     >
+                     <MdAddCircleOutline size={20} />
+                     </button>
+                  </div>
+               </td>
+               
+               <td>
+                  <strong>
+                     {formatPrice(product.amount * product.price)}
+                  </strong>
+               </td>
+               <td>
+                  <button
+                     type="button"
+                     data-testid="remove-product"
+                     onClick={() => handleRemoveProduct(product.id)}
+                  >
+                     <MdDelete size={20} />
+                  </button>
+               </td>
+            </tr>
+         )
+      
+      })
+
+   const total =  formatPrice(
+      cart.reduce((sumTotal, product) => {
+         return sumTotal += product.price*product.amount
+      }, 0)
+   )
+
+   function handleProductIncrement(product: Product) {
+      // TODO
+   }
+
+   function handleProductDecrement(product: Product) {
+      // TODO
+   }
+
+   function handleRemoveProduct(productId: number) {
+      removeProduct(productId);
+   }
+
+   return (
+      <Container>
+         <ProductTable>
+         <thead>
+            <tr>
+               <th aria-label="product image" />
+               <th>PRODUTO</th>
+               <th>QTD</th>
+               <th>SUBTOTAL</th>
+               <th aria-label="delete icon" />
+            </tr>
+         </thead>
+         <tbody>
+            {cartFormatted}
+         </tbody>
+         </ProductTable>
+
+         <footer>
+         <button type="button">Finalizar pedido</button>
+
+         <Total>
+            <span>TOTAL</span>
+            <strong>              
+               {total}
             </strong>
-         </td>
-         <td>
-            <button
-               type="button"
-               data-testid="remove-product"
-            // onClick={() => handleRemoveProduct(product.id)}
-            >
-               <MdDelete size={20} />
-            </button>
-         </td>
-      </tr>
-      )
-   
-})
-
-console.log(cartFormatted)
-console.log(cart)
-
-// const total =
-//   formatPrice(
-//     cart.reduce((sumTotal, product) => {
-//       // TODO
-//     }, 0)
-//   )
-
-function handleProductIncrement(product: Product) {
-   // TODO
-}
-
-function handleProductDecrement(product: Product) {
-   // TODO
-}
-
-function handleRemoveProduct(productId: number) {
-   // TODO
-}
-
-return (
-   <Container>
-      <ProductTable>
-      <thead>
-         <tr>
-            <th aria-label="product image" />
-            <th>PRODUTO</th>
-            <th>QTD</th>
-            <th>SUBTOTAL</th>
-            <th aria-label="delete icon" />
-         </tr>
-      </thead>
-      <tbody>
-         {/* impressão de cart */}
-         {cartFormatted}
-         {/* fim da impressão de cart */}
-      </tbody>
-      </ProductTable>
-
-      <footer>
-      <button type="button">Finalizar pedido</button>
-
-      <Total>
-         <span>TOTAL</span>
-         <strong>
-            R$ 359,80
-            {
-            // Custo total da compra
-            }
-         </strong>
-      </Total>
-      </footer>
-   </Container>
-);
+         </Total>
+         </footer>
+      </Container>
+   );
 };
 
 export default Cart;
