@@ -45,8 +45,6 @@ const Home = (): JSX.Element => {
       addProduct(id)
    }
 
-   console.log(products)
-
    return (
       <ProductList>
          {
