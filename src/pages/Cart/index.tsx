@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import {
    MdDelete,
    MdAddCircleOutline,
@@ -19,63 +19,63 @@ interface Product {
 
 const Cart = (): JSX.Element => {
    const { cart, removeProduct, updateProductAmount } = useCart();
-
+   
    const cartFormatted = cart.map(product => {
-         return(
-            <tr data-testid="product" key={product.id}>            
-               <td>
-                  <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
-               </td>
-               <td>
-                  <strong>{product.title}</strong>
-                  <span>{product.price} </span>
-               </td>
-               <td>
-                  <div>
-                     <button
-                        type="button"
-                        data-testid="decrement-product"
-                        disabled={product.amount <= 1}
-                        onClick={() => handleProductDecrement(product)}
-                     >
-                        <MdRemoveCircleOutline size={20} />
-                     </button>
-                     <input
-                        type="text"
-                        data-testid="product-amount"
-                        readOnly
-                        value={product.amount}
-                     />
-                     <button
-                        type="button"
-                        data-testid="increment-product"
-                        onClick={() => handleProductIncrement(product)}
-                     >
-                     <MdAddCircleOutline size={20} />
-                     </button>
-                  </div>
-               </td>
-               
-               <td>
-                  <strong>
-                     {formatPrice(product.amount * product.price)}
-                  </strong>
-               </td>
-               <td>
+      return(
+         <tr data-testid="product" key={product.id}>            
+            <td>
+               <img src={product.image} alt="Tênis de Caminhada Leve Confortável" />
+            </td>
+            <td>
+               <strong>{product.title}</strong>
+               <span>{product.price} </span>
+            </td>
+            <td>
+               <div>
                   <button
                      type="button"
-                     data-testid="remove-product"
-                     onClick={() => handleRemoveProduct(product.id)}
+                     data-testid="decrement-product"
+                     disabled={product.amount <= 1}
+                     onClick={() => handleProductDecrement(product)}
                   >
-                     <MdDelete size={20} />
+                     <MdRemoveCircleOutline size={20} />
                   </button>
-               </td>
-            </tr>
-         )
+                  <input
+                     type="text"
+                     data-testid="product-amount"
+                     readOnly
+                     value={product.amount}
+                  />
+                  <button
+                     type="button"
+                     data-testid="increment-product"
+                     onClick={() => handleProductIncrement(product)}
+                  >
+                  <MdAddCircleOutline size={20} />
+                  </button>
+               </div>
+            </td>
+            
+            <td>
+               <strong>
+                  {formatPrice(product.amount * product.price)}
+               </strong>
+            </td>
+            <td>
+               <button
+                  type="button"
+                  data-testid="remove-product"
+                  onClick={() => handleRemoveProduct(product.id)}
+               >
+                  <MdDelete size={20} />
+               </button>
+            </td>
+         </tr>
+      )
       
-      })
+   })
 
-   const total =  formatPrice(
+   const total = formatPrice(
       cart.reduce((sumTotal, product) => {
          return sumTotal += product.price*product.amount
       }, 0)
@@ -83,10 +83,21 @@ const Cart = (): JSX.Element => {
 
    function handleProductIncrement(product: Product) {
       // TODO
+      const productAmount = {
+            productId: product.id, 
+            amount: product.amount + 1
+      }
+      updateProductAmount(productAmount)
+      
    }
 
    function handleProductDecrement(product: Product) {
       // TODO
+      const productAmount = {
+         productId: product.id, 
+         amount: product.amount - 1
+      }
+      updateProductAmount(productAmount)
    }
 
    function handleRemoveProduct(productId: number) {
